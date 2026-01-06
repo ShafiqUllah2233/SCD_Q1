@@ -1,13 +1,22 @@
 # Healthcare Microservices Application
 
+## GitHub Repository
+**Repository URL:** https://github.com/ShafiqUllah2233/SCD_Q1.git
 
+## Docker Hub Images
+All microservice images are available on Docker Hub:
+- `shafiqoo/api-gateway`
+- `shafiqoo/auth-service`
+- `shafiqoo/patient-service`
+- `shafiqoo/doctor-service`
+- `shafiqoo/appointment-service`
+- `shafiqoo/notification-service`
 
 ## Deployment Commands
 
 ### 1. Clone the Repository
 ```bash
-
-git clone https://github.com/noorulain-nn/Final_SCD_Q1.git
+git clone https://github.com/ShafiqUllah2233/SCD_Q1.git
 ```
 **Purpose:** Downloads the source code from GitHub to your local machine.
 
