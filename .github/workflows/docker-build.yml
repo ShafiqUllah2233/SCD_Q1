@@ -9,9 +9,6 @@ on:
     branches:
       - main
 
-env:
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -25,69 +22,62 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # Step 3: Log in to Docker Hub using credentials stored in GitHub Secrets
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      # Step 4: Build and push API Gateway image
-      - name: Build and Push API Gateway
+      # Step 3: Build API Gateway image
+      - name: Build API Gateway
         uses: docker/build-push-action@v5
         with:
           context: ./api-gateway
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/api-gateway:latest,${{ secrets.DOCKER_USERNAME }}/api-gateway:${{ github.sha }}
+          push: false
+          tags: shafiqoo/api-gateway:latest
 
-      # Step 5: Build and push Auth Service image
-      - name: Build and Push Auth Service
+      # Step 4: Build Auth Service image
+      - name: Build Auth Service
         uses: docker/build-push-action@v5
         with:
           context: ./auth-service
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/auth-service:latest,${{ secrets.DOCKER_USERNAME }}/auth-service:${{ github.sha }}
+          push: false
+          tags: shafiqoo/auth-service:latest
 
-      # Step 6: Build and push Patient Service image
-      - name: Build and Push Patient Service
+      # Step 5: Build Patient Service image
+      - name: Build Patient Service
         uses: docker/build-push-action@v5
         with:
           context: ./patient-service
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/patient-service:latest,${{ secrets.DOCKER_USERNAME }}/patient-service:${{ github.sha }}
+          push: false
+          tags: shafiqoo/patient-service:latest
 
-      # Step 7: Build and push Doctor Service image
-      - name: Build and Push Doctor Service
+      # Step 6: Build Doctor Service image
+      - name: Build Doctor Service
         uses: docker/build-push-action@v5
         with:
           context: ./doctor-service
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/doctor-service:latest,${{ secrets.DOCKER_USERNAME }}/doctor-service:${{ github.sha }}
+          push: false
+          tags: shafiqoo/doctor-service:latest
 
-      # Step 8: Build and push Appointment Service image
-      - name: Build and Push Appointment Service
+      # Step 7: Build Appointment Service image
+      - name: Build Appointment Service
         uses: docker/build-push-action@v5
         with:
           context: ./appointment-service
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/appointment-service:latest,${{ secrets.DOCKER_USERNAME }}/appointment-service:${{ github.sha }}
+          push: false
+          tags: shafiqoo/appointment-service:latest
 
-      # Step 9: Build and push Notification Service image
-      - name: Build and Push Notification Service
+      # Step 8: Build Notification Service image
+      - name: Build Notification Service
         uses: docker/build-push-action@v5
         with:
           context: ./notification-service
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/notification-service:latest,${{ secrets.DOCKER_USERNAME }}/notification-service:${{ github.sha }}
+          push: false
+          tags: shafiqoo/notification-service:latest
 
-      # Step 10: Display success message
+      # Step 9: Display success message
       - name: Build Summary
         run: |
-          echo "✅ All Docker images have been built and pushed successfully!"
-          echo "Images pushed to Docker Hub:"
-          echo "  - ${{ secrets.DOCKER_USERNAME }}/api-gateway:latest"
-          echo "  - ${{ secrets.DOCKER_USERNAME }}/auth-service:latest"
-          echo "  - ${{ secrets.DOCKER_USERNAME }}/patient-service:latest"
-          echo "  - ${{ secrets.DOCKER_USERNAME }}/doctor-service:latest"
-          echo "  - ${{ secrets.DOCKER_USERNAME }}/appointment-service:latest"
-          echo "  - ${{ secrets.DOCKER_USERNAME }}/notification-service:latest"
+          echo "✅ All Docker images have been built successfully!"
+          echo "Images built:"
+          echo "  - shafiqoo/api-gateway:latest"
+          echo "  - shafiqoo/auth-service:latest"
+          echo "  - shafiqoo/patient-service:latest"
+          echo "  - shafiqoo/doctor-service:latest"
+          echo "  - shafiqoo/appointment-service:latest"
+          echo "  - shafiqoo/notification-service:latest"
