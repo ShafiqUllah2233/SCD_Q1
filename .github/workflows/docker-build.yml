@@ -1,0 +1,93 @@
+name: Build and Push Docker Images
+
+# Trigger the workflow on push to main branch
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Checkout the source code from the repository
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Docker Buildx for building multi-platform images
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 3: Log in to Docker Hub using credentials stored in GitHub Secrets
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Step 4: Build and push API Gateway image
+      - name: Build and Push API Gateway
+        uses: docker/build-push-action@v5
+        with:
+          context: ./api-gateway
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/api-gateway:latest,${{ secrets.DOCKER_USERNAME }}/api-gateway:${{ github.sha }}
+
+      # Step 5: Build and push Auth Service image
+      - name: Build and Push Auth Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./auth-service
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/auth-service:latest,${{ secrets.DOCKER_USERNAME }}/auth-service:${{ github.sha }}
+
+      # Step 6: Build and push Patient Service image
+      - name: Build and Push Patient Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./patient-service
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/patient-service:latest,${{ secrets.DOCKER_USERNAME }}/patient-service:${{ github.sha }}
+
+      # Step 7: Build and push Doctor Service image
+      - name: Build and Push Doctor Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./doctor-service
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/doctor-service:latest,${{ secrets.DOCKER_USERNAME }}/doctor-service:${{ github.sha }}
+
+      # Step 8: Build and push Appointment Service image
+      - name: Build and Push Appointment Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./appointment-service
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/appointment-service:latest,${{ secrets.DOCKER_USERNAME }}/appointment-service:${{ github.sha }}
+
+      # Step 9: Build and push Notification Service image
+      - name: Build and Push Notification Service
+        uses: docker/build-push-action@v5
+        with:
+          context: ./notification-service
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/notification-service:latest,${{ secrets.DOCKER_USERNAME }}/notification-service:${{ github.sha }}
+
+      # Step 10: Display success message
+      - name: Build Summary
+        run: |
+          echo "✅ All Docker images have been built and pushed successfully!"
+          echo "Images pushed to Docker Hub:"
+          echo "  - ${{ secrets.DOCKER_USERNAME }}/api-gateway:latest"
+          echo "  - ${{ secrets.DOCKER_USERNAME }}/auth-service:latest"
+          echo "  - ${{ secrets.DOCKER_USERNAME }}/patient-service:latest"
+          echo "  - ${{ secrets.DOCKER_USERNAME }}/doctor-service:latest"
+          echo "  - ${{ secrets.DOCKER_USERNAME }}/appointment-service:latest"
+          echo "  - ${{ secrets.DOCKER_USERNAME }}/notification-service:latest"

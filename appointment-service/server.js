@@ -6,13 +6,16 @@ app.use(express.json());
 
 let appointments = [];
 
+// Use environment variable for notification service URL or fallback to localhost
+const NOTIFICATION_SERVICE = process.env.NOTIFICATION_SERVICE_URL || "http://localhost:4005";
+
 app.post("/appointments", async (req, res) => {
   const { userId, doctorId, date } = req.body;
 
   appointments.push({ userId, doctorId, date });
 
   // notify
-  await axios.post("http://notification-service:4005/notify", {
+  await axios.post(`${NOTIFICATION_SERVICE}/notify`, {
     message: "Appointment Booked"
   });
 

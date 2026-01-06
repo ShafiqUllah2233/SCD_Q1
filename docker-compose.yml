@@ -1,0 +1,79 @@
+services:
+  # API Gateway - Single entry point for all external requests
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "4000:4000"
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:4001
+      - USER_SERVICE_URL=http://patient-service:4002
+      - DOCTOR_SERVICE_URL=http://doctor-service:4003
+      - APPOINTMENT_SERVICE_URL=http://appointment-service:4004
+    depends_on:
+      - auth-service
+      - patient-service
+      - doctor-service
+      - appointment-service
+    networks:
+      - healthcare-network
+    restart: unless-stopped
+
+  # Authentication Service - Handles user registration and login with JWT
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "4001:4001"
+    networks:
+      - healthcare-network
+    restart: unless-stopped
+
+  # Patient Service - Manages patient profiles and records
+  patient-service:
+    build: ./patient-service
+    container_name: patient-service
+    ports:
+      - "4002:4002"
+    networks:
+      - healthcare-network
+    restart: unless-stopped
+
+  # Doctor Service - Manages doctor information and availability
+  doctor-service:
+    build: ./doctor-service
+    container_name: doctor-service
+    ports:
+      - "4003:4003"
+    networks:
+      - healthcare-network
+    restart: unless-stopped
+
+  # Appointment Service - Handles appointment scheduling
+  appointment-service:
+    build: ./appointment-service
+    container_name: appointment-service
+    ports:
+      - "4004:4004"
+    environment:
+      - NOTIFICATION_SERVICE_URL=http://notification-service:4005
+    depends_on:
+      - notification-service
+    networks:
+      - healthcare-network
+    restart: unless-stopped
+
+  # Notification Service - Sends notifications for appointments
+  notification-service:
+    build: ./notification-service
+    container_name: notification-service
+    ports:
+      - "4005:4005"
+    networks:
+      - healthcare-network
+    restart: unless-stopped
+
+# Custom network for inter-service communication
+networks:
+  healthcare-network:
+    driver: bridge
